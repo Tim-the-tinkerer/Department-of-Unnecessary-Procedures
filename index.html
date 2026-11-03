@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111815">
+<title>Department of Unnecessary Procedures · Bureau Simulator</title>
+<style>
+:root{--ink:#27332f;--muted:#647069;--paper:#f6f1e4;--cream:#ebe5d6;--desk:#dedacf;--line:#c9c3b3;--red:#a43e32;--red-d:#7b2c24;--gold:#a7853c;--green:#54745d;--blue:#5a707c;--shadow:0 8px 28px rgba(43,46,38,.08);--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:radial-gradient(circle at 15% -10%,#f6f1e5,transparent 44%),repeating-linear-gradient(0deg,transparent,transparent 35px,rgba(72,74,61,.025) 36px),#e7e2d6;font-family:var(--sans);min-width:320px}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #bd9f50;outline-offset:2px}::selection{background:#e5cf9d}
+.top-rule{height:9px;background:repeating-linear-gradient(90deg,var(--ink) 0 30px,#a88c4f 30px 36px)}.masthead{background:#283630;color:#f7f0dc;border-bottom:5px solid #b5995b}.mast-inner{max-width:1660px;margin:auto;padding:24px 28px 22px;display:flex;align-items:center;gap:20px}.emblem{width:87px;height:87px;flex:0 0 87px;border:3px double #dbc994;border-radius:50%;display:grid;place-items:center;position:relative;transform:rotate(-7deg)}.emblem:before{content:"OFFICIALLY UNNECESSARY";position:absolute;top:10px;font:6px var(--mono);letter-spacing:1px;color:#dbc994}.emblem b{font:30px var(--serif);letter-spacing:-3px;color:#e9d8ac;margin-top:7px}.eyebrow{font:10px var(--mono);letter-spacing:.23em;text-transform:uppercase;color:#c9b985}.masthead h1{font:normal clamp(25px,3vw,43px)/1.08 var(--serif);letter-spacing:-.025em;margin:4px 0 5px}.subtitle{font:12px var(--mono);letter-spacing:.05em;color:#c6cebb}.headright{margin-left:auto;text-align:right;display:flex;flex-direction:column;gap:8px;flex-shrink:0}.clock-label{font:10px var(--mono);color:#b1baa9;letter-spacing:.15em}.clock-num{font:23px var(--mono);color:#f1e8d1;white-space:nowrap}.running-light{display:flex;align-items:center;justify-content:flex-end;gap:7px;font:10px var(--mono);letter-spacing:.09em;color:#e3d5b2}.lamp{height:8px;width:8px;border-radius:50%;background:#8e8573;box-shadow:0 0 0 3px #ffffff15}.lamp.on{background:#dfb75c;box-shadow:0 0 10px #dbaa60}
+.main{max-width:1660px;margin:auto;padding:25px 20px 22px;display:grid;grid-template-columns:minmax(250px,286px) minmax(0,1fr) minmax(285px,330px);gap:16px;align-items:start}.panel{border:1px solid #c6c0b2;background:var(--paper);box-shadow:var(--shadow)}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding:13px 16px;background:#f0ebde}.panel-head h2,.panel-head h3{font:700 12px var(--mono);letter-spacing:.095em;text-transform:uppercase;margin:0}.panel-index{color:#ab8645;font:10px var(--mono)}.panel-content{padding:16px}.stack{display:flex;flex-direction:column;gap:16px}.micro{font:10px var(--mono);letter-spacing:.085em;text-transform:uppercase;color:var(--muted)}.subhead{font:700 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;margin:0 0 13px}.hint{font:12px/1.55 var(--sans);color:#68716b}.field-label{display:block;font:700 10px var(--mono);text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px}.field{width:100%;background:#fffcf5;border:1px solid #bfb8aa;border-radius:0;color:var(--ink);padding:11px 10px;font-size:12px;min-height:40px}.field+ .field-label{margin-top:15px}.field::placeholder{color:#9a998f}.button{border:1px solid var(--ink);background:var(--ink);color:#f7f0df;min-height:42px;padding:11px 14px;font:700 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;transition:transform .12s,background .12s,border-color .12s}.button:hover:not(:disabled){background:#425448;transform:translateY(-1px)}.button:active:not(:disabled){transform:translateY(1px)}.button.red{background:#913c31;border-color:#913c31}.button.red:hover:not(:disabled){background:#752c26}.button.outline{background:transparent;border-color:#988f7d;color:var(--ink)}.button.outline:hover:not(:disabled){background:#e7e1d1}.button.small{font-size:10px;min-height:32px;padding:8px 10px}.button.full{width:100%}.field-note{font:10px/1.4 var(--mono);color:#8a8174;margin-top:6px}.queue{display:flex;flex-direction:column;gap:7px}.case-btn{width:100%;background:#f9f5eb;border:1px solid #cfc6b5;padding:11px 11px;text-align:left;color:var(--ink);transition:background .15s}.case-btn:hover{background:#fffdf5}.case-btn.active{border-color:#a17c43;box-shadow:inset 3px 0 #a17c43;background:#fffaf0}.case-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font:10px var(--mono);color:#837e6e}.case-title{display:block;margin:7px 0;font:16px/1.15 var(--serif);overflow-wrap:anywhere}.case-status{font:9px var(--mono);text-transform:uppercase;letter-spacing:.04em}.case-status.good{color:#4e785d}.case-status.bad{color:#ad4737}.case-progress{display:flex;gap:3px;margin-top:10px}.case-progress i{height:4px;flex:1;background:#dcd5c6}.case-progress i.done{background:#607b62}.case-progress i.review{background:#c1a057}.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px}.preset{border:1px solid #c9c0b1;background:#eee8da;color:#625d51;font:700 9px var(--mono);padding:9px 3px;min-height:34px}.preset.current{background:#35443a;color:#f5efdf;border-color:#35443a}.toggle-line{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;border-top:1px solid #dfd8c8;padding:12px 0;cursor:pointer}.toggle-line input{accent-color:#8f483b;width:16px;height:16px;flex:0 0 16px;margin:0}.toggle-line strong{display:block;font-size:12px;font-weight:650}.toggle-line small{display:block;font-size:10px;line-height:1.5;color:#7a7b71;margin-top:3px}.fineprint{margin:10px 0 0;padding-top:11px;border-top:1px dashed #cbbda6;font:10px/1.6 var(--mono);color:#818074}
+.center-head{padding:19px 21px 15px;display:flex;gap:15px;justify-content:space-between;align-items:flex-start}.center-head h2{font:normal clamp(23px,2.35vw,34px)/1.12 var(--serif);margin:6px 0 7px;overflow-wrap:anywhere}.center-head p{color:#77786f;font-size:12px;margin:0;line-height:1.5}.status-stamp{flex-shrink:0;border:2px solid #9c8e7c;color:#9c8e7c;padding:7px 10px;font:800 11px var(--mono);letter-spacing:.1em;transform:rotate(-4deg);max-width:135px;text-align:center}.status-stamp.review{color:#a67c39;border-color:#a67c39}.status-stamp.bad{color:var(--red);border-color:var(--red)}.status-stamp.good{color:#4d7b5f;border-color:#4d7b5f}.control-band{padding:12px 20px;background:#e5e1d3;border-top:1px solid #c6c0b2;border-bottom:1px solid #c6c0b2;display:flex;align-items:center;flex-wrap:wrap;gap:8px}.control-band .button{white-space:nowrap}.speed-label{font:10px var(--mono);color:#696f66;text-transform:uppercase;margin-left:auto}.speed-picker{display:flex;gap:0}.speed-picker button{background:#f7f2e6;border:1px solid #a8a092;border-right:0;font:10px var(--mono);padding:9px 10px;color:#5a6257;min-height:33px}.speed-picker button:last-child{border-right:1px solid #a8a092}.speed-picker button.active{background:var(--ink);color:white}.machine-stage{padding:19px 20px 10px;background:linear-gradient(125deg,#f5f1e6,#ebe7d9);position:relative}.section-caption{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 16px;font:10px var(--mono);letter-spacing:.1em;color:#6c7268}.section-caption strong{color:#a18858}.stage-diagram{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;position:relative}.office{min-height:171px;border:1px solid #bcb8a9;background:#fbf8ed;display:flex;flex-direction:column;padding:12px 10px 11px;cursor:pointer;position:relative;transition:box-shadow .15s,transform .15s}.office:focus-visible{outline:3px solid #b89b5d;outline-offset:2px}.office:hover{box-shadow:0 3px 10px #6e685029;transform:translateY(-2px)}.office.selected{border:2px solid #97713d;padding:11px 9px 10px;box-shadow:0 3px 0 #ae87514d}.office:after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);font:15px var(--mono);z-index:2;color:#9e9a89}.office:nth-child(4):after,.office:nth-child(8):after{display:none}.office-num{display:flex;justify-content:space-between;gap:3px;font:10px var(--mono);color:#9e8c69}.office-num small{font-size:9px}.office-title{font:700 15px/1.13 var(--serif);margin:14px 0 10px;min-height:35px}.office-form{font:10px var(--mono);color:#808277;margin:auto 0 9px}.office-bottom{display:flex;justify-content:space-between;align-items:center;gap:4px;border-top:1px dashed #d5cfbf;padding-top:9px}.office-state{font:800 9px var(--mono);letter-spacing:.015em;text-transform:uppercase;color:#8e8b7d}.office-state.approved,.office-state.waived{color:#4b7a58}.office-state.reviewing{color:#b28b44}.office-state.blocked,.office-state.revoked{color:#a94639}.office-flag{width:11px;height:11px;background:#c8c5b8;border-radius:50%;flex-shrink:0}.office-flag.approved,.office-flag.waived{background:#5e8967}.office-flag.reviewing{background:#d3a64c;box-shadow:0 0 0 3px #d3a64c33;animation:pulse 1.2s infinite}.office-flag.blocked,.office-flag.revoked{background:#a94437}.office-note{font:9px/1.3 var(--mono);color:#777c74;min-height:26px;margin-top:8px;overflow-wrap:anywhere}.office-note.problem{color:#a33f32}.progress-track{height:3px;background:#e1dacb;margin-top:9px}.progress-fill{height:100%;background:#ae8c4b;transition:width .2s}@keyframes pulse{50%{box-shadow:0 0 0 7px #d3a64c0a}}.conveyor{height:31px;display:flex;align-items:center;margin-top:15px;overflow:hidden;border-top:1px solid #d1cabe;gap:12px;font:9px var(--mono);color:#988c73;letter-spacing:.12em}.conveyor strong{white-space:nowrap}.belt{flex:1;height:9px;border-top:1px solid #c7beab;border-bottom:1px solid #c7beab;background:repeating-linear-gradient(90deg,transparent 0 12px,#c9bfab 12px 15px,transparent 15px 28px);background-size:42px 100%}.belt.on{animation:belt .65s linear infinite}@keyframes belt{to{background-position:42px 0}}.diagnostic{margin:0 20px 20px;padding:14px 15px;background:#edf0e6;border-left:3px solid #6d8b72;border-top:1px solid #d4dacb;border-right:1px solid #d4dacb;border-bottom:1px solid #d4dacb}.diagnostic.bad{background:#f4e8df;border-left-color:#a34535;border-color:#e2cbbb;border-left-color:#a34535}.diagnostic-head{font:800 11px var(--mono);letter-spacing:.06em;margin-bottom:8px}.diagnostic-text{font:12px/1.58 var(--sans);color:#62675e}.cycle-path{font:11px/1.6 var(--mono);color:#a14335;margin-top:9px;word-break:break-word}.diagnostic-buttons{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.side-card{padding:17px;background:repeating-linear-gradient(0deg,transparent,transparent 28px,#d6d0c038 29px),#f9f3e7;position:relative}.side-card:before{content:"DUP // FORM 000-A";position:absolute;right:14px;top:12px;font:8px var(--mono);color:#afa38d}.document-title{font:24px/1.07 var(--serif);margin:19px 0 5px}.document-subtitle{font:10px var(--mono);text-transform:uppercase;letter-spacing:.07em;color:#897e6a;margin-bottom:19px}.doc-line{display:grid;grid-template-columns:83px 1fr;gap:8px;border-bottom:1px solid #d9d0bd;padding:8px 0;font-size:12px}.doc-line .key{font:9px var(--mono);color:#898576;text-transform:uppercase}.doc-line .val{font:11px/1.5 var(--mono);overflow-wrap:anywhere}.stamp-box{margin-top:15px;border:1px dashed #c4b7a1;min-height:60px;padding:10px;display:flex;align-items:center;gap:12px}.stamp-box .seal{font:800 15px var(--mono);border:2px solid #a94a38;color:#a94a38;padding:5px;transform:rotate(-5deg);white-space:nowrap}.stamp-box .seal.good{color:#50795e;border-color:#50795e}.stamp-box p{margin:0;font:10px/1.5 var(--mono);color:#898376}.right-sub{border-top:1px solid #d1c6b4;padding:15px 16px}.right-sub h3{font:700 12px var(--mono);letter-spacing:.09em;text-transform:uppercase;margin:0 0 12px}.detail-title{font:19px var(--serif);margin:5px 0 10px}.detail-state{font:10px var(--mono);font-weight:bold;color:#9c4436;letter-spacing:.04em}.detail-text{font:12px/1.6 var(--sans);color:#6f726b;margin:8px 0}.need-list{list-style:none;padding:0;margin:10px 0 0}.need-list li{font:10px/1.55 var(--mono);padding:6px 0;border-top:1px dashed #d5cfbe}.need-list li span{float:right;color:#947f58;text-transform:uppercase}.need-list li span.yes{color:#4d795d}.detail-action{margin-top:14px}.detail-action .button{width:100%}.detail-action p{font:10px/1.5 var(--mono);color:#8a8270;margin:8px 0 0}.log-header{display:flex;justify-content:space-between;align-items:center}.log{height:272px;overflow-y:auto;background:#f1ecde;border:1px solid #d5cdbc;padding:6px 9px;scrollbar-color:#b5a995 transparent;scrollbar-width:thin}.log-row{display:grid;grid-template-columns:32px 1fr;gap:9px;border-bottom:1px dotted #d0c8b6;padding:9px 1px;font:10px/1.5 var(--mono)}.log-row:last-child{border-bottom:0}.log-tick{color:#af9465}.log-row .message{color:#5f6b61}.log-row.warn .message{color:#a23b2f}.log-row.good .message{color:#3f7050}.log-row.note .message{color:#807258}.bottom{max-width:1620px;margin:0 auto 35px;padding:0 20px}.metrics{background:#2d3932;border:1px solid #485248;color:#e7ddc8;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0}.metric{padding:15px 20px;border-right:1px solid #586156}.metric:last-child{border-right:0}.metric .number{font:28px var(--serif);font-variant-numeric:tabular-nums}.metric .name{font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#b7ba9e;margin-top:4px}.foot-note{font:10px/1.7 var(--mono);text-align:center;color:#8b8474;margin:15px 0}.toast{position:fixed;bottom:20px;right:20px;z-index:20;background:#2b3d31;color:#fff5e0;padding:13px 17px;box-shadow:0 6px 20px #2225;font:11px var(--mono);max-width:320px;transform:translateY(180%);transition:transform .25s}.toast.show{transform:translateY(0)}.docket-empty{font:12px var(--serif);color:#7d7769;border:1px dashed #cfc6b5;padding:14px}.tiny-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.text-button{border:0;background:transparent;text-decoration:underline;text-underline-offset:3px;color:#776c54;font:10px var(--mono);padding:3px}.text-button:hover{color:var(--red)}.notice-stripe{background:repeating-linear-gradient(-45deg,#dbbd69 0 6px,#3e4136 6px 12px);height:5px;opacity:.65}
+@media(max-width:1320px){.main{grid-template-columns:250px minmax(0,1fr);gap:15px}.sidebar-right{grid-column:2}.sidebar-left{grid-row:1 / span 2}.center-column{grid-column:2}.sidebar-right{display:grid;grid-template-columns:1fr 1fr}.sidebar-right>.panel{min-width:0}.side-card{min-height:0}.stage-diagram{grid-template-columns:repeat(4,minmax(0,1fr))}.office{min-height:155px}.office-title{font-size:14px}}
+@media(max-width:900px){.mast-inner{padding:20px 18px}.headright{display:none}.main{grid-template-columns:1fr;padding:16px 12px}.sidebar-left,.center-column,.sidebar-right{grid-column:1;grid-row:auto}.sidebar-left{display:grid;grid-template-columns:1fr 1fr;align-items:start}.sidebar-left .panel:nth-child(3){grid-column:1/-1}.sidebar-right{grid-template-columns:1fr 1fr}.stage-diagram{grid-template-columns:repeat(4,minmax(0,1fr))}.metrics{grid-template-columns:repeat(6,minmax(0,1fr))}.metric{padding:13px 10px}.metric .number{font-size:22px}}
+@media(max-width:640px){.mast-inner{gap:12px;padding:17px 14px}.emblem{width:60px;height:60px;flex-basis:60px}.emblem b{font-size:21px}.emblem:before{font-size:4px;top:7px}.masthead h1{font-size:26px}.subtitle{font-size:9px}.eyebrow{font-size:8px}.sidebar-left,.sidebar-right{display:flex;flex-direction:column}.sidebar-left .panel,.sidebar-right .panel{width:100%}.stage-diagram{grid-template-columns:repeat(2,minmax(0,1fr))}.office:nth-child(2n):after{display:none}.office:nth-child(4):after{display:none}.office{min-height:151px}.center-head{padding:15px}.machine-stage{padding:14px}.diagnostic{margin:0 14px 14px}.control-band{padding:10px 13px}.speed-label{margin-left:0}.metric .number{font-size:20px}.metric .name{font-size:8px;line-height:1.4}.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{border-bottom:1px solid #586156}.metric:nth-child(3){border-right:0}.status-stamp{font-size:9px;max-width:90px}.center-head h2{font-size:25px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* NIGHT SHIFT / DARK MODE — the default administrative working conditions.
+   All functional markup and procedural machinery remain unchanged. */
+:root {
+  color-scheme: dark;
+  --ink: #e4e6dc;
+  --muted: #a4b0a4;
+  --paper: #1c2521;
+  --cream: #202b26;
+  --desk: #151e1a;
+  --line: #394840;
+  --red: #dd8979;
+  --red-d: #b9685b;
+  --gold: #d5b275;
+  --green: #92b99a;
+  --blue: #92abb4;
+  --shadow: 0 9px 26px rgba(0, 0, 0, .20);
+}
+body {
+  background: radial-gradient(ellipse at 17% -13%, rgba(56, 73, 58, .26), transparent 46%),
+              repeating-linear-gradient(0deg, transparent 0 35px, rgba(146, 166, 145, .018) 35px 36px),
+              #111815;
+}
+::selection { background: #725d37; color: #fff0d4; }
+button:focus-visible, input:focus-visible, select:focus-visible,
+.office:focus-visible { outline-color: #e4bb70; }
+.top-rule { background: repeating-linear-gradient(90deg, #111a16 0 30px, #9d7c47 30px 36px); }
+.masthead { background: #17231d; border-bottom-color: #866d42; }
+.masthead .subtitle { color: #b4c0b3; }
+.masthead .eyebrow, .emblem:before { color: #c8ac7c; }
+.masthead .emblem { border-color: #ad945f; }
+.emblem b { color: #ebd3a3; }
+.clock-label { color: #aab8aa; }
+.clock-num { color: #e3ddcb; }
+.running-light { color: #ccbd9d; }
+.panel { border-color: #38463e; background: var(--paper); }
+.panel-head { background: #26322b; border-bottom-color: var(--line); }
+.panel-index { color: #d5af6e; }
+.hint, .center-head p, .detail-text { color: #acb6aa; }
+.field { background: #131c18; border-color: #506057; color: #e6e7da; }
+.field::placeholder { color: #8e9c91; }
+.field-note, .fineprint, .toggle-line small { color: #a4aea2; }
+.button { color: #f1eee1; background: #355044; border-color: #56725f; }
+.button:hover:not(:disabled) { background: #446452; }
+.button.red { background: #783e35; border-color: #a96355; }
+.button.red:hover:not(:disabled) { background: #945044; }
+.button.outline { color: #e0e3d7; border-color: #69796c; background: #202c25; }
+.button.outline:hover:not(:disabled) { background: #35443a; }
+.case-btn { background: #202c25; border-color: #39483e; color: var(--ink); }
+.case-btn:hover { background: #2c3a30; }
+.case-btn.active { background: #343c2e; border-color: #b18b53; box-shadow: inset 3px 0 #d0a662; }
+.case-top { color: #adb5a5; }
+.case-status.good { color: #a4d0aa; }
+.case-status.bad { color: #ed9988; }
+.case-progress i { background: #435147; }
+.case-progress i.done { background: #81b18b; }
+.case-progress i.review { background: #d8ac5e; }
+.preset { border-color: #435149; background: #242e27; color: #bcc9ba; }
+.preset:hover:not(.current) { background: #344136; }
+.preset.current { color: #fff1d7; background: #566447; border-color: #bb965c; }
+.toggle-line { border-top-color: #37453b; }
+.toggle-line input { accent-color: #d1a66b; }
+.fineprint { border-top-color: #4a5547; }
+.status-stamp { color: #aeb7ab; border-color: #78877b; }
+.status-stamp.review { color: #e2ba71; border-color: #bb985b; }
+.status-stamp.bad { color: #ed9888; border-color: #c47465; }
+.status-stamp.good { color: #a2d1ac; border-color: #83b28e; }
+.control-band { background: #17211c; border-top-color: #36453b; border-bottom-color: #36453b; }
+.speed-label { color: #b4c0b3; }
+.speed-picker button { background: #232e27; color: #c0cabd; border-color: #566458; }
+.speed-picker button:last-child { border-right-color: #566458; }
+.speed-picker button.active { background: #55715c; color: #fbf4e3; }
+.machine-stage { background: linear-gradient(133deg, #1b2721, #17211d); }
+.section-caption { color: #b2bfb0; }
+.section-caption strong { color: #e0b776; }
+.office { background: #26332a; border-color: #506154; }
+.office:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, .3); }
+.office.selected { border-color: #c8a46b; box-shadow: 0 3px 0 rgba(192, 155, 91, .25); }
+.office:after { color: #a4b19f; }
+.office-num { color: #d1b184; }
+.office-form, .office-note { color: #b4c0b2; }
+.office-bottom { border-top-color: #516051; }
+.office-state { color: #b7bdad; }
+.office-state.approved, .office-state.waived { color: #a6d5ae; }
+.office-state.reviewing { color: #edc37e; }
+.office-state.blocked, .office-state.revoked, .office-note.problem { color: #eda094; }
+.office-flag { background: #637067; }
+.office-flag.approved, .office-flag.waived { background: #8fbd94; }
+.office-flag.blocked, .office-flag.revoked { background: #de8072; }
+.progress-track { background: #435145; }
+.progress-fill { background: #ddb777; }
+.conveyor { border-top-color: #46584a; color: #c2b18e; }
+.belt { border-top-color: #576353; border-bottom-color: #576353;
+        background: repeating-linear-gradient(90deg, transparent 0 12px, #65705d 12px 15px, transparent 15px 28px); background-size: 42px 100%; }
+.diagnostic { background: #24352b; border-color: #455e49; border-left-color: #89b994; }
+.diagnostic.bad { background: #352722; border-color: #704d42; border-left-color: #df8b78; }
+.diagnostic-text { color: #c0cbbe; }
+.cycle-path { color: #eda18f; }
+.side-card { background: repeating-linear-gradient(0deg, transparent 0 28px, rgba(183, 188, 158, .065) 28px 29px), #242d25; }
+.side-card:before { color: #c3aa82; }
+.document-subtitle, .doc-line .key, .stamp-box p { color: #b1bbaa; }
+.doc-line { border-bottom-color: #4b5749; }
+.stamp-box { border-color: #6a715d; }
+.stamp-box .seal { color: #e99988; border-color: #c67e6a; }
+.stamp-box .seal.good { color: #a1d1a7; border-color: #83b48a; }
+.right-sub { border-top-color: #445449; }
+.detail-state { color: #eba08e; }
+.need-list li { border-top-color: #46574b; }
+.need-list li span { color: #e5bd80; }
+.need-list li span.yes { color: #a6d1aa; }
+.detail-action p { color: #a9b8a9; }
+.log { background: #141e19; border-color: #435349; scrollbar-color: #546c58 #141e19; }
+.log-row { border-bottom-color: #39473d; }
+.log-tick { color: #d1ad78; }
+.log-row .message { color: #bac8b9; }
+.log-row.warn .message { color: #eba092; }
+.log-row.good .message { color: #9fd1a9; }
+.log-row.note .message { color: #c4bd9f; }
+.metrics { background: #18251e; border-color: #3c5443; color: #e5e3d6; }
+.metric { border-right-color: #3c5141; }
+.metric .name { color: #abbda8; }
+.foot-note { color: #a2b09f; }
+.toast { background: #344b3c; color: #f1e9d4; border: 1px solid #68836d; }
+.docket-empty { color: #c3c9b9; border-color: #536252; }
+.text-button { color: #d5bc8c; }
+.text-button:hover { color: #f0a697; }
+.notice-stripe { opacity: .45; }
+/* Docket navigation and independent diagnostic affordances — Night Shift palette. */
+.docket-summary{font:10px/1.65 var(--mono);color:#bccabb;margin:0 0 10px}
+.docket-summary strong{color:#e4b581;font-weight:750}
+.docket-tools{display:flex;gap:7px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.docket-filters{display:flex;gap:3px;flex:1;min-width:0}
+.docket-filters button{flex:1;min-width:0;border:1px solid #45594b;background:#1b2921;color:#bbc9b8;padding:8px 4px;font:700 9px var(--mono);cursor:pointer}
+.docket-filters button:hover{background:#34463a}
+.docket-filters button.active{background:#4d654f;border-color:#b79561;color:#f9eed9}
+.revisit-btn{margin:2px 0 10px;text-align:center}
+.revisit-btn[hidden]{display:none}
+.queue{max-height:480px;overflow-y:auto;padding-right:4px;scrollbar-color:#63745f #1a261e;scrollbar-width:thin}
+.case-subline{display:block;margin:4px 0 0;font:9px/1.5 var(--mono);color:#a9b8a8}
+.case-rules{display:block;margin:5px 0 0;font:9px/1.4 var(--mono);letter-spacing:.02em;color:#d4b989}
+.preset:disabled,.toggle-line input:disabled{opacity:.52;cursor:not-allowed}
+.case-btn .case-status.review{color:#e6bd7e}
+.case-btn .case-status.bad{color:#f1a194}
+.office[data-office="walks"]{border-style:dashed;border-color:#aa905c}
+.office[data-office="walks"].selected{border-style:solid}
+.office[data-office="walks"] .office-title:after{content:"  ↝";font:18px var(--serif);color:#d6b477}
+.walk-permit{margin-top:12px;padding:10px;border:1px dashed #6c745b;background:#283129;font:10px/1.6 var(--mono);color:#ddc39a}
+.walk-permit strong{color:#dce6cc}
+.office[data-office="walks"].selected{background:#2a3023}
+ .intake-copy{display:flex;gap:9px;align-items:flex-start;padding:10px 0 2px;border-top:1px solid #465347;margin-top:13px;cursor:pointer;color:#e4e9d8}
+ .intake-copy input{width:16px;height:16px;flex:0 0 16px;accent-color:#b9a16d;margin:1px 0 0}
+ .intake-copy strong{font:700 11px/1.4 var(--mono);display:block}
+ .intake-copy small{display:block;font:10px/1.5 var(--sans);color:#a7b5a5;margin-top:2px}
+ @media(max-width:900px){.queue{max-height:300px}}
+
+/* Supplemental case investigation. The certified event ledger is unmodified. */
+.inquiry-panel .panel-content{padding:13px 16px 15px}
+.inquiry-panel .hint{margin:0 0 11px;color:#bdcbb8}
+.inquiry-panel .button{border-color:#a58b60;color:#f0dfc0}
+.inquiry-panel .button:hover{background:#314638}
+.inquiry-backdrop[hidden]{display:none}
+.inquiry-backdrop{position:fixed;inset:0;z-index:200;background:rgba(5,11,8,.86);padding:22px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.inquiry-frame{width:min(950px,100%);height:min(93vh,1050px);max-height:100%;border:1px solid #71806c;background:#18231d;box-shadow:0 20px 75px #000b;display:flex;flex-direction:column;min-height:0}
+.inquiry-toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid #52614f;background:#24342b;flex-shrink:0}
+.inquiry-toolbar .micro{color:#e2bb80;letter-spacing:.14em;flex:1;min-width:145px}
+.inquiry-toolbar .button{font-size:9px;min-height:33px;padding:8px 10px}
+.inquiry-close{font:23px/1 var(--sans);min-width:34px;height:34px;border:1px solid #5c6c5c;background:transparent;color:#ead9b4}
+.inquiry-close:hover{background:#445748}
+.inquiry-scroll{overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#5b715f #18231d;flex:1;min-height:0}
+.report-paper{max-width:860px;margin:0 auto;padding:38px 43px 46px;color:#e1e6d8;font-size:13px;line-height:1.75}
+.report-letterhead{font:10px/1.6 var(--mono);color:#d2ae77;letter-spacing:.14em;text-transform:uppercase;border-bottom:2px double #8d916e;padding-bottom:13px}
+.report-paper h2{font:normal clamp(26px,4vw,39px)/1.12 var(--serif);color:#f2e8d4;margin:19px 0 8px}
+.report-case-title{font:16px/1.45 var(--serif);color:#d7cbad;margin:0 0 23px}
+.report-subtitle{font:10px/1.6 var(--mono);letter-spacing:.07em;color:#acbfae}
+.report-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:22px 0 28px}
+.report-stat{border:1px solid #4a5a4d;padding:11px;min-width:0;background:#202d24}
+.report-stat strong{display:block;font:600 16px/1.25 var(--mono);color:#eed0a0;overflow-wrap:anywhere}
+.report-stat span{display:block;font:9px/1.5 var(--mono);color:#b2c0b1;margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.report-paper section{border-top:1px solid #58634e;padding-top:17px;margin-top:23px}
+.report-paper h3{font:700 12px/1.4 var(--mono);color:#e7c58d;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px}
+.report-paper p{margin:7px 0 12px;color:#d4ded0}
+.report-paper .report-note{font:11px/1.7 var(--mono);color:#a9b9a8}
+.report-timeline{list-style:none;padding:0;margin:13px 0 0;border-left:1px solid #68775f}
+.report-timeline li{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:0 0 18px 15px;position:relative}
+.report-timeline li:before{content:'';width:7px;height:7px;border-radius:50%;position:absolute;left:-4px;top:8px;background:#b99f6d}
+.report-timeline .report-time{font:11px/1.5 var(--mono);color:#e1bc7f;white-space:nowrap}
+.report-timeline .report-entry-title{font:700 12px/1.4 var(--sans);color:#f3e7d0}
+.report-timeline li p{font-size:12px;margin:3px 0 0;color:#c2d0c2}
+.report-timeline li.problem:before{background:#df8e79}
+.report-timeline li.problem .report-entry-title{color:#efa995}
+.report-timeline li.resolution:before{background:#8cb89a}
+.report-timeline li.resolution .report-entry-title{color:#b6dec0}
+.report-form-table{width:100%;border-collapse:collapse;font-size:11px}
+.report-form-table th{text-align:left;color:#d5b37c;font:10px var(--mono);border-bottom:1px solid #74836d;padding:8px 7px}
+.report-form-table td{border-bottom:1px solid #415345;padding:8px 7px;vertical-align:top;color:#cdd9c9}
+.report-form-table td:first-child{color:#e9c999;font-family:var(--mono)}
+.report-disclaimer{border-top:2px double #79856e;padding-top:15px;margin-top:30px;font:10px/1.65 var(--mono);color:#b8c7b5}
+@media(max-width:650px){.inquiry-backdrop{padding:0}.inquiry-frame{height:100dvh;max-height:100dvh;border:0}.report-paper{padding:24px 18px 34px}.report-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.report-timeline li{grid-template-columns:1fr;gap:1px}.inquiry-toolbar{padding:10px}.inquiry-toolbar .micro{width:100%;flex-basis:100%}.report-form-table th,.report-form-table td{padding:6px 4px}}
+@media print{body.inquiry-print>*:not(.inquiry-backdrop){display:none!important}body.inquiry-print .inquiry-backdrop{position:static;display:block;background:white;padding:0;backdrop-filter:none}body.inquiry-print .inquiry-frame{border:0;box-shadow:none;height:auto;max-height:none;background:white;width:100%}body.inquiry-print .inquiry-toolbar{display:none}body.inquiry-print .inquiry-scroll{overflow:visible}body.inquiry-print .report-paper{color:#161c17;max-width:none;padding:0;font-size:11pt}body.inquiry-print .report-letterhead,body.inquiry-print .report-paper h3,body.inquiry-print .report-stat strong,body.inquiry-print .report-time{color:#604524}body.inquiry-print .report-paper h2,body.inquiry-print .report-case-title,body.inquiry-print .report-subtitle,body.inquiry-print .report-entry-title,body.inquiry-print .report-paper p,body.inquiry-print .report-note,body.inquiry-print .report-disclaimer,body.inquiry-print .report-form-table td,body.inquiry-print .report-form-table th{color:#171d17!important}body.inquiry-print .report-stat{background:transparent;border-color:#777}body.inquiry-print .report-stat span{color:#555}body.inquiry-print .report-paper section{border-color:#777}body.inquiry-print .report-paper li{break-inside:avoid}body.inquiry-print .report-paper section{break-inside:auto}body.inquiry-print .report-form-table tr{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="top-rule"></div>
+<header class="masthead"><div class="mast-inner">
+  <div class="emblem" aria-hidden="true"><b>D·U·P</b></div>
+  <div><div class="eyebrow">The Office of Administrative Perpetuity</div><h1>Department of Unnecessary Procedures</h1><div class="subtitle">Nothing shall be done until everything has been done first.</div></div>
+  <div class="headright"><div class="clock-label">OFFICIAL PROCEDURAL TIME</div><div class="clock-num" id="headerClock">T + 00000</div><div class="running-light"><span class="lamp" id="runLamp"></span><span id="runLabel">MACHINERY IDLE</span></div></div>
+</div></header>
+<main class="main">
+  <aside class="stack sidebar-left" aria-label="Intake and regulations">
+    <section class="panel"><div class="panel-head"><h2>Petition Intake</h2><span class="panel-index">DESK 01</span></div><div class="panel-content">
+      <label for="requestSelect" class="field-label">Nature of tiny undertaking</label>
+      <select id="requestSelect" class="field"><option value="bell">Ring a small bell</option><option value="paperclip">Move one paperclip</option><option value="window">Open a window by one inch</option><option value="page">Turn a single page</option><option value="pencil">Sharpen a pencil</option><option value="water">Drink a glass of water</option><option value="walk">Take three unnecessarily elaborate steps</option></select>
+      <label for="customRequest" class="field-label">Or specify another matter</label><input id="customRequest" class="field" maxlength="80" placeholder="e.g. Blink once (voluntarily)">
+      <p class="field-note">No undertaking is too small to require oversight.</p>
+      <label class="intake-copy"><input id="inheritRulesToggle" type="checkbox"><span><strong>Copy selected petition's regulations</strong><small>Optional. Otherwise this new petition starts with fresh Official rules.</small></span></label>
+      <button class="button red full" id="fileBtn" style="margin-top:14px">+ Submit formal petition</button>
+    </div></section>
+    <section class="panel"><div class="panel-head"><h2>Docket Register</h2><span id="queueCount" class="panel-index">01 FILE</span></div><div class="panel-content">
+      <div id="docketSummary" class="docket-summary" aria-live="polite"></div>
+      <div class="docket-tools"><div class="docket-filters" role="group" aria-label="Filter petitions"><button data-filter="all" class="active">ALL</button><button data-filter="unfinished">UNFINISHED</button><button data-filter="finished">FINISHED</button></div></div>
+      <button id="jumpDeadlockBtn" class="button outline small full revisit-btn" hidden>↶ REVISIT OLDEST DEADLOCK</button>
+      <div id="docketQueue" class="queue" aria-label="Petitions, unfinished first"></div>
+      <p class="field-note">Every petition keeps its own record. Select an older file to inspect or intervene.</p>
+    </div></section>
+    <section class="panel"><div class="panel-head"><h2>Petition Regulations</h2><span id="regulationCase" class="panel-index">FILE 0001</span></div><div class="panel-content">
+      <div class="micro" style="margin-bottom:10px">Procedural disposition</div>
+      <div class="preset-grid" role="group" aria-label="Regulation presets">
+        <button class="preset" data-preset="rational">LENIENT</button><button class="preset" data-preset="official">OFFICIAL</button><button class="preset" data-preset="terminal">TERMINAL</button>
+      </div>
+      <label class="toggle-line"><span><strong>Circular mandates</strong><small>Departments require each other's permission to grant permission; Silly Walks demands final Committee approval of its own preliminary permit.</small></span><input id="circularToggle" type="checkbox"></label>
+      <label class="toggle-line"><span><strong>Retroactive audits</strong><small>Reconsider approvals already granted.</small></span><input id="auditToggle" type="checkbox"></label>
+      <label class="toggle-line"><span><strong>Misfiling incidents</strong><small>Lose evidence that was previously on record.</small></span><input id="misfileToggle" type="checkbox"></label>
+      <label class="toggle-line"><span><strong>Decorum's final say</strong><small>After the Committee approves a silly walk, Decorum can reject its conduct. The provisional permit, walk certificate, and Committee approval must be reissued.</small></span><input id="decorumVetoToggle" type="checkbox"></label>
+      <p class="fineprint" id="regulationNote">Rules belong to this petition only. New petitions start with Official regulations unless you explicitly choose to copy rules when filing.</p>
+    </div></section>
+  </aside>
+  <section class="panel center-column" aria-label="Bureaucracy simulator">
+    <div class="center-head"><div><div class="micro" id="activeCaseId">CASE NO. 0001 · PETITION</div><h2 id="activeCaseTitle">Ring a small bell</h2><p id="activeCaseSub">An extraordinarily minor action requiring comprehensive institutional assent.</p></div><div id="caseStamp" class="status-stamp">PENDING</div></div>
+    <div class="control-band"><button class="button" id="runBtn">▶ BEGIN PROCESSING</button><button class="button outline small" id="stepBtn">ADVANCE ONE TICK</button><button class="button outline small" id="soundBtn" title="Toggle subtle office sounds">SOUND OFF</button><span class="speed-label">SPEED</span><div class="speed-picker"><button data-speed="1" class="active">1×</button><button data-speed="3">3×</button><button data-speed="8">8×</button></div></div>
+    <div class="machine-stage"><div class="section-caption"><span>THE EIGHT CHAMBERS OF ASSENT</span><strong id="machineCaption">AWAITING CIRCULATION</strong></div><div class="stage-diagram" id="officeGrid" aria-label="Eight approval offices"></div><div class="conveyor"><strong>INTERDEPARTMENTAL FILE TRANSFER</strong><div id="conveyorBelt" class="belt"></div><span>↟</span></div></div>
+    <div class="diagnostic" id="diagnostic" role="status" aria-live="polite"></div>
+  </section>
+  <aside class="stack sidebar-right" aria-label="Active case dossier and audit record">
+    <section class="panel"><div class="panel-head"><h2>Certified Dossier</h2><span class="panel-index">COPY OF RECORD</span></div><div class="side-card" id="dossier"></div><div class="right-sub"><div class="tiny-row"><h3>Office Inspection</h3><span class="micro" id="officeIndex">01 / 08</span></div><div id="officeDetail"></div></div></section>
+    <section class="panel inquiry-panel" aria-label="Separate investigative report"><div class="panel-head"><h2>Office of Procedural Inquiry</h2><span class="panel-index">SUPPLEMENT</span></div><div class="panel-content"><p class="hint">Reconstruct the history of the selected petition in a separate report. The certified ledger remains exactly as issued.</p><button class="button outline small full" id="openInvestigationBtn">EXAMINE SELECTED PETITION</button></div></section>
+    <section class="panel"><div class="panel-head"><h2>Clerk's Event Ledger</h2><span class="panel-index">LIVE TRANSCRIPT</span></div><div class="panel-content"><div class="log-header"><span class="micro">Newest entry first</span><button class="text-button" id="exportBtn">EXPORT LOG ↓</button></div><div id="auditLog" class="log" style="margin-top:9px" aria-live="off"></div><div class="tiny-row" style="margin-top:12px"><button class="button outline small" id="resetBtn">SHRED ALL FILES</button><span class="micro" id="eventCount">0 ENTRIES</span></div></div></section>
+  </aside>
+</main>
+<footer class="bottom"><div class="metrics"><div class="metric"><div class="number" id="mTicks">0</div><div class="name">Procedural ticks</div></div><div class="metric"><div class="number" id="mGranted">0</div><div class="name">Stamps issued</div></div><div class="metric"><div class="number" id="mRevoked">0</div><div class="name">Actions undone</div></div><div class="metric"><div class="number" id="mVetoes">0</div><div class="name">Decorum vetoes</div></div><div class="metric"><div class="number" id="mConflicts">0</div><div class="name">Circular conflicts</div></div><div class="metric"><div class="number" id="mDone">0</div><div class="name">Trivial acts performed</div></div></div><p class="foot-note">DEPARTMENT NOTICE 004: NO ACTIVITY IS AUTHORIZED BY THE MERE ABSENCE OF A PROHIBITION. &nbsp;·&nbsp; REVISION 1.6 — SUPPLEMENTARY INVESTIGATIVE REPORT · ORIGINAL LEDGER UNALTERED.</p></footer>
+<div id="investigationDialog" class="inquiry-backdrop" hidden>
+  <div class="inquiry-frame" role="dialog" aria-modal="true" aria-labelledby="investigationTitle">
+    <div class="inquiry-toolbar"><span class="micro">Supplementary investigation · not a certified ledger</span><button class="button outline small" id="refreshInvestigationBtn">REFRESH FINDINGS</button><button class="button outline small" id="downloadInvestigationBtn">EXPORT REPORT .TXT</button><button class="button outline small" id="printInvestigationBtn">PRINT / PDF</button><button class="inquiry-close" id="closeInvestigationBtn" title="Close investigation" aria-label="Close investigative report">×</button></div>
+    <div class="inquiry-scroll" id="investigationScroll"><article id="investigationDocument" class="report-paper"></article></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(()=>{'use strict';
+const OFFICES=[
+ {id:'intake',number:'01',name:'Office of Initial Requests',short:'Intake',form:'F-001',deps:[],work:1,about:'Numbers the request and verifies that the applicant admits to wanting something.',instruction:'A request without a number is indistinguishable from an intention.'},
+ {id:'registry',number:'02',name:'Archive of Prior Intentions',short:'Registry',form:'F-008',deps:['intake'],work:2,about:'Searches for precedent and establishes whether the intent was previously intended.',instruction:'No request may be new without evidence that it was previously considered.'},
+ {id:'safety',number:'03',name:'Bureau of Safety & Innocence',short:'Safety',form:'F-012',deps:['registry'],work:2,about:'Certifies that the proposed action will cause no measurable disturbance.',instruction:'Absence of risk must be documented before it can be acknowledged.'},
+ {id:'decorum',number:'04',name:'Department of Decorum',short:'Decorum',form:'F-023',deps:['registry'],work:2,about:'Determines whether the action is sufficiently dignified to exist, and may later overrule the Committee’s final endorsement of a silly walk.',instruction:'Permissible conduct must first be approved as appropriate conduct.'},
+ {id:'fiscal',number:'05',name:'Office of Fiscal Implications',short:'Fiscal',form:'F-034',deps:['safety'],work:2,about:'Projects the budget impact to five decimal places, including cost of the projection.',instruction:'Nothing is free until its cost has been approved as negligible.'},
+ {id:'walks',number:'06',name:'Department of Silly Walks',short:'Silly Walks',form:'F-041',deps:['decorum','fiscal'],work:3,about:'Requires an authorized ceremonial gait before any minor undertaking may be considered. Its walking permit must be provisionally endorsed by the Committee on Minor Acts.',instruction:'One must not walk before permission to walk has walked through the proper channels.'},
+ {id:'committee',number:'07',name:'Committee on Minor Acts',short:'Committee',form:'F-047',deps:['decorum','fiscal','walks'],work:3,about:'Issues provisional walking permits, then formally approves the completed gait and original petition. Decorum can still overturn its final endorsement.',instruction:'A gait can be provisionally approved without the Committee having definitively approved that it happened.'},
+ {id:'dispatch',number:'08',name:'Final Seal & Dispatch',short:'Dispatch',form:'F-099',deps:['committee','safety'],work:2,about:'Provides the final authorization, unless a later office retroactively objects.',instruction:'Authorization is valid only while the conditions of authorization remain valid.'}
+];
+const REQUESTS={bell:'Ring a small bell',paperclip:'Move one paperclip',window:'Open a window by one inch',page:'Turn a single page',pencil:'Sharpen a pencil',water:'Drink a glass of water',walk:'Take three unnecessarily elaborate steps'};
+const $=id=>document.getElementById(id);const all=(sel)=>[...document.querySelectorAll(sel)];
+const DEFAULT_CONFIG={preset:'official',circular:false,audits:true,misfile:false,decorumVeto:true};
+const app={clock:0,seq:0,dockets:[],selected:null,selectedOffice:'intake',running:false,timer:null,speed:1,sound:false,audio:null,history:[],stats:{issued:0,revoked:0,cycles:0,performed:0,vetoes:0},docketFilter:'all'};
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function pad(n,w=4){return String(n).padStart(w,'0');}
+function current(){return app.dockets.find(d=>d.id===app.selected)||app.dockets[0]||null;}
+function record(d,id){return d.records[id];}
+function approved(d,id){return ['approved','waived'].includes(record(d,id).state);}
+function depsFor(d,id){let deps=[...OFFICES.find(o=>o.id===id).deps];if(d.config.circular){if(id==='registry')deps.push('dispatch');if(id==='safety')deps.push('decorum');if(id==='decorum')deps.push('safety');if(id==='walks')deps.push('committee');}return deps;}
+function regulationText(c){return `${c.preset.toUpperCase()} · CIRC ${c.circular?'ON':'OFF'} · AUDIT ${c.audits?'ON':'OFF'} · MISFILE ${c.misfile?'ON':'OFF'} · DECORUM ${c.decorumVeto?'ON':'OFF'}`;}
+function log(message,kind='note',d=null){app.history.unshift({tick:app.clock,caseId:d?d.id:'—',kind,message});if(app.history.length>6000)app.history.pop();}
+function tone(type='click',manual=false){if(!app.sound&&!manual)return;try{let A=window.AudioContext||window.webkitAudioContext;if(!A)return;let ctx=app.audio||(app.audio=new A());if(ctx.state==='suspended')ctx.resume();let osc=ctx.createOscillator(),gain=ctx.createGain(),t=ctx.currentTime;osc.type=type==='bell'?'sine':type==='warn'?'triangle':'square';osc.frequency.setValueAtTime(type==='bell'?880:type==='warn'?220:500,t);if(type==='bell')osc.frequency.exponentialRampToValueAtTime(660,t+.45);else osc.frequency.exponentialRampToValueAtTime(type==='warn'?185:335,t+.055);gain.gain.setValueAtTime(0.0001,t);gain.gain.exponentialRampToValueAtTime(type==='bell'?.10:.018,t+.009);gain.gain.exponentialRampToValueAtTime(.0001,t+(type==='bell'?1.5:.085));osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+(type==='bell'?1.5:.1));}catch(e){/* audio is optional */}}
+let toastTimer=null;function toast(msg){let el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3000);}
+function newDocket(title,key,copyRules=false){
+ const source=copyRules?current():null;
+ // Every petition owns a distinct configuration object. New petitions begin
+ // under Official rules unless the user expressly requests an independent copy.
+ const initialRules=source?source.config:DEFAULT_CONFIG;
+ const d={id:++app.seq,title,key,created:app.clock,config:{...initialRules},completedAt:null,performed:false,records:Object.fromEntries(OFFICES.map(o=>[o.id,{state:'pending',remaining:0,startedAt:null,walkPermitIssued:false}])),lastProgress:app.clock,conduct:{status:'awaiting',due:null,attempts:0,vetoes:0,lastFinding:'No review on record.'},deadlockSignature:'',deadlockSince:null,deadlockCount:0};app.dockets.unshift(d);app.selected=d.id;app.selectedOffice='intake';app.docketFilter='all';log(`Petition received: “${title}”. ${OFFICES.length} signatures requested. Governing rules: ${regulationText(d.config)}. ${source?`Copied from DUP-${pad(source.id,5)} as an independent rule set.`:'Fresh Official regulations assigned.'}`, 'note',d);updateDeadlock(d);render();return d;}
+function preset(name){const d=current();if(!d||d.completedAt)return;const opts={rational:{preset:'rational',circular:false,audits:false,misfile:false,decorumVeto:false},official:{preset:'official',circular:false,audits:true,misfile:false,decorumVeto:true},terminal:{preset:'terminal',circular:true,audits:true,misfile:true,decorumVeto:true}};d.config={...opts[name]};configChanged(d,`Petition regulations revised: ${name.toUpperCase()} interpretation.`);}
+function configChanged(d,msg){log(`${msg} Governing rules: ${regulationText(d.config)}.`, 'warn',d);validate(d);reconcileConductReview(d);updateDeadlock(d);render();}
+function validate(d){if(d.completedAt)return;let changed=true,passes=0;while(changed&&passes++<OFFICES.length+1){changed=false;for(const o of OFFICES){const r=record(d,o.id);if(r.state==='approved'&&depsFor(d,o.id).some(dep=>!approved(d,dep))){r.state='revoked';r.remaining=0;if(o.id==='walks')r.walkPermitIssued=false;app.stats.revoked++;log(`${o.short}: ${o.form} rescinded; prerequisite no longer valid.`,'warn',d);tone('warn');changed=true;}}}reconcileConductReview(d);}
+function cycleGroups(d){
+ if(!d||d.completedAt)return [];
+ const open=OFFICES.map(o=>o.id).filter(id=>!approved(d,id));
+ const adj=new Map(open.map(id=>[id,depsFor(d,id).filter(dep=>open.includes(dep))]));
+ const cycles=new Map();
+ // Enumerate actual, directed dependency loops, rather than treating an entire
+ // strongly connected component as though every office depends on every other.
+ const visit=(start,at,path,seen)=>{
+  for(const next of adj.get(at)||[]){
+   if(next===start&&path.length>1){
+    const rotations=path.map((_,i)=>[...path.slice(i),...path.slice(0,i)]);
+    const key=rotations.map(r=>r.join('>')).sort()[0];
+    if(!cycles.has(key))cycles.set(key,path.slice());
+   } else if(!seen.has(next)&&path.length<open.length){
+    seen.add(next);path.push(next);visit(start,next,path,seen);path.pop();seen.delete(next);
+   }
+  }
+ };
+ open.forEach(id=>visit(id,id,[id],new Set([id])));
+ return [...cycles.values()].sort((a,b)=>a.length-b.length||a.join().localeCompare(b.join()));
+}
+function updateDeadlock(d){
+ if(!d||d.completedAt)return [];
+ const groups=cycleGroups(d);
+ const signature=groups.map(g=>g.join('>')).sort().join('|');
+ const previous=d.deadlockSignature;
+ if(signature!==previous){
+  if(signature){
+   if(!previous)d.deadlockSince=app.clock;
+   app.stats.cycles++;
+   log(`FORMAL CONTRADICTION: ${groups.length} self-dependent approval loop${groups.length===1?'':'s'} discovered. This petition cannot progress without a dispensation or regulation change.`,'warn',d);
+   tone('warn');
+  } else if(previous){
+   log('PROCEDURAL IMPASSE RESOLVED: all circular prerequisites for this petition have been cleared.','good',d);
+   d.deadlockSince=null;
+  }
+ }
+ d.deadlockSignature=signature;
+ d.deadlockCount=groups.length;
+ return groups;
+}
+function reviewDelay(d,o){return o.work+(d.config.preset==='rational'?0:d.config.preset==='official'?1:2);}
+
+// F-023-G: a post-Committee review of the ACTUAL gait, not of the original petition.
+// No ninth department is needed: this is Decorum exercising appellate jurisdiction.
+function conductRequired(d){return !!d.config.decorumVeto&&record(d,'walks').state==='approved'&&record(d,'committee').state==='approved'&&record(d,'decorum').state!=='waived';}
+function conductCleared(d){return !conductRequired(d)||d.conduct.status==='accepted';}
+function beginConductReview(d){
+ if(!conductRequired(d))return;
+ d.conduct.attempts++;
+ d.conduct.status='pending';
+ d.conduct.due=app.clock+2;
+ d.conduct.lastFinding='The Committee’s final approval has been referred back to Decorum for post-approval examination.';
+ log(`DECORUM APPEAL OPENED: F-023-G will examine the conduct of the silly walk after Committee F-047 approval (walk review ${d.conduct.attempts}). Final Dispatch must await the verdict.`,'note',d);
+}
+function reconcileConductReview(d){
+ if(!conductRequired(d)){
+  if(['pending','accepted'].includes(d.conduct.status)){
+   d.conduct.status='awaiting';d.conduct.due=null;
+  }
+ }else if(d.conduct.status!=='pending'&&d.conduct.status!=='accepted')beginConductReview(d);
+}
+function finishConductReview(d){
+ if(d.conduct.status!=='pending'||d.conduct.due>app.clock||!conductRequired(d))return;
+ // Deterministic departmental caprice; later reissuances receive a fresh hearing.
+ // OFFICIAL rejects roughly 3/10, TERMINAL roughly 5/10 applications.
+ const roll=(d.id*13+d.conduct.attempts*7+d.created*3)%10;
+ const rejects=roll<(d.config.preset==='terminal'?5:3);
+ if(!rejects){
+  d.conduct.status='accepted';d.conduct.due=null;
+  d.conduct.lastFinding='Conduct recognized as technically appropriate despite its manifest silliness.';
+  log('DECORUM AFFIRMS F-023-G: the gait is judged suitably inappropriate for an appropriate act. Committee approval F-047 stands; Final Dispatch may proceed.','good',d);
+  tone('click');d.lastProgress=app.clock;
+  return;
+ }
+ const findings=[
+  'the left knee displayed unauthorized enthusiasm',
+  'the stride was insufficiently deferential to the filing cabinets',
+  'the applicant crossed a corridor with intolerable dignity',
+  'the gait was frivolous but not frivolous in the approved manner',
+  'the right ankle failed to demonstrate adequate institutional restraint'
+ ];
+ const finding=findings[(d.id+d.conduct.attempts)%findings.length];
+ d.conduct.status='vetoed';d.conduct.due=null;d.conduct.vetoes++;app.stats.vetoes++;
+ d.conduct.lastFinding=finding[0].toUpperCase()+finding.slice(1)+'.';
+ log(`DECORUM VETO — F-023-G: despite the Committee's final approval, ${finding}. The Committee's decision is overruled.`,'warn',d);
+ for(const id of ['committee','walks']){
+  const r=record(d,id);
+  if(r.state==='approved'){
+   r.state='revoked';r.remaining=0;
+   if(id==='walks')r.walkPermitIssued=false;
+   app.stats.revoked++;
+   log(`${OFFICES.find(o=>o.id===id).short}: ${OFFICES.find(o=>o.id===id).form} annulled by Decorum's conduct objection.`,'warn',d);
+  }
+ }
+ log('FULL WALKING REISSUE ORDER: F-046-W provisional permit withdrawn, F-041 gait certificate void, and F-047 Committee approval cancelled. A fresh silly walk and new paperwork are required.','warn',d);
+ d.lastProgress=app.clock;tone('warn');validate(d);
+}
+function authorizeIfReady(d){
+ if(d.completedAt||!OFFICES.every(o=>approved(d,o.id))||!conductCleared(d))return;
+ d.completedAt=app.clock;d.deadlockSignature='';d.deadlockCount=0;d.deadlockSince=null;
+ log(`FINAL AUTHORIZATION: “${d.title}” is now technically permissible.`,'good',d);
+ tone('bell');if(d.id===app.selected)toast('All eight offices and Decorum’s gait review agree. The act may now be performed.');
+}
+function tick(){
+ app.clock++;
+ for(const d of [...app.dockets].reverse()){
+  if(d.completedAt)continue;
+  validate(d);
+  finishConductReview(d);
+  for(const o of OFFICES){
+   const r=record(d,o.id);
+   if(approved(d,o.id))continue;
+   const lacking=depsFor(d,o.id).filter(dep=>!approved(d,dep));
+   const awaitingConduct=o.id==='dispatch'&&!conductCleared(d);
+   if(lacking.length||awaitingConduct){
+    if(r.state!=='blocked'){
+     r.state='blocked';r.remaining=0;
+     if(['registry','walks','committee','dispatch'].includes(o.id))log(`${o.short} holds ${o.form}: awaiting ${[...lacking.map(id=>OFFICES.find(x=>x.id===id).short),...(awaitingConduct?['Decorum conduct review F-023-G']:[])].join(' + ')}.`,'note',d);
+    }
+    continue;
+   }
+   if(r.state!=='reviewing'){
+    r.state='reviewing';r.remaining=reviewDelay(d,o);r.startedAt=app.clock;
+    if(o.id==='walks'){r.walkPermitIssued=false;log('Committee receives F-046-W: request for preliminary authorization of an unnecessarily elaborate gait.','note',d);}
+    log(`${o.short} begins examination of ${o.form}.`,'note',d);d.lastProgress=app.clock;
+   } else {
+    r.remaining--;
+    if(o.id==='walks'&&!r.walkPermitIssued&&r.remaining<=Math.max(1,reviewDelay(d,o)-2)){
+     r.walkPermitIssued=true;log('PROVISIONAL WALK PERMIT: Committee on Minor Acts approves F-046-W. An officially silly gait may now be undertaken.','good',d);tone('click');
+    }
+    if(r.remaining<=0){
+     r.state='approved';app.stats.issued++;d.lastProgress=app.clock;
+     if(o.id==='walks')log('CEREMONIAL GAIT COMPLETED: three officially unnecessary steps taken under provisional Committee approval.','good',d);
+     log(`${o.short} stamps ${o.form} APPROVED.`,'good',d);tone('click');
+     if(o.id==='committee')beginConductReview(d);
+    }
+   }
+  }
+  authorizeIfReady(d);
+ }
+ // Filing disruptions also belong to each petition. One file's rules can no
+ // longer audit or misfile another file's authorizations.
+ for(const d of app.dockets){
+  if(d.completedAt||!d.config.audits||app.clock%(d.config.preset==='terminal'?19:39)!==0)continue;
+  const options=OFFICES.filter(o=>o.id!=='intake'&&record(d,o.id).state==='approved');
+  if(!options.length)continue;
+  const o=options[Math.floor((app.clock/19+d.id*5)%options.length)];
+  record(d,o.id).state='revoked';record(d,o.id).remaining=0;if(o.id==='walks')record(d,o.id).walkPermitIssued=false;app.stats.revoked++;
+  log(`RETROACTIVE AUDIT: ${o.form} recalled pending verification of its own authenticity.`,'warn',d);
+  tone('warn');validate(d);
+ }
+ for(const d of app.dockets){
+  if(d.completedAt||!d.config.misfile||app.clock%29!==0)continue;
+  const options=OFFICES.filter(o=>o.id!=='intake'&&record(d,o.id).state==='approved');
+  if(!options.length)continue;
+  const o=options[(app.clock+d.id)%options.length];
+  record(d,o.id).state='revoked';record(d,o.id).remaining=0;if(o.id==='walks')record(d,o.id).walkPermitIssued=false;app.stats.revoked++;
+  log(`FILING INCIDENT: ${o.form} has been found in the wrong drawer, and therefore cannot be found.`,'warn',d);
+  tone('warn');validate(d);
+ }
+ // This pass is independent of app.selected. Every open case has its own
+ // contradiction signature, reminder messages, and audit trail.
+ for(const d of app.dockets){
+  if(d.completedAt)continue;
+  const groups=updateDeadlock(d);
+  if(groups.length){
+   if(app.clock%8===0&&d.deadlockSince!==app.clock)
+    log(`Motion to resolve this petition's impasse has been referred to the offices currently causing it.`,'warn',d);
+  } else if(app.clock%14===0){
+   const reviewing=d.conduct.status==='pending'||OFFICES.some(o=>record(d,o.id).state==='reviewing');
+   const actionable=OFFICES.some(o=>!approved(d,o.id)&&depsFor(d,o.id).every(dep=>approved(d,dep)));
+   if(!reviewing&&!actionable)
+    log('NO ACTIONABLE MOTION: this unfinished petition has neither an active review nor an available office.','note',d);
+  }
+ }
+ render();
+ if(app.running&&app.dockets.every(d=>!!d.completedAt))stop();
+}
+function run(){if(app.running)return;app.running=true;let ms=Math.max(85,690/app.speed);app.timer=setInterval(tick,ms);render();}
+function stop(){app.running=false;clearInterval(app.timer);app.timer=null;render();}
+function adjustSpeed(n){app.speed=n;if(app.running){stop();run();}else render();}
+function perform(){let d=current();if(!d||!d.completedAt||d.performed)return;d.performed=true;app.stats.performed++;log(`AUTHORIZED ACT EXECUTED: “${d.title}”. No consequential result observed.`, 'good',d);if(d.key==='bell')tone('bell',true);else tone('click',true);toast(d.key==='bell'?'DING. The bell has been rung, legally.':'The insignificant act has been performed, legally.');render();}
+function waive(){let d=current(),id=app.selectedOffice;if(!d||d.completedAt)return;const r=record(d,id);if(approved(d,id))return;r.state='waived';r.remaining=0;d.lastProgress=app.clock;app.stats.issued++;log(`EXTRAORDINARY DISPENSATION: ${OFFICES.find(o=>o.id===id).form} is deemed approved without evidence.`, 'good',d);tone('click');reconcileConductReview(d);authorizeIfReady(d);updateDeadlock(d);toast('A departmental requirement has been bypassed. Future audits may object.');render();}
+function stateOf(d){if(d.performed)return {label:'COMPLETED',cls:'good'};if(d.completedAt)return {label:'AUTHORIZED',cls:'good'};let groups=cycleGroups(d);if(groups.length)return{label:'DEADLOCKED',cls:'bad'};if(d.conduct.status==='pending')return{label:'DECORUM REVIEW',cls:'review'};if(OFFICES.some(o=>record(d,o.id).state==='reviewing'))return{label:'IN REVIEW',cls:'review'};return{label:'PENDING',cls:''};}
+function render(){const d=current();$('headerClock').textContent='T + '+pad(app.clock,5);$('runLamp').classList.toggle('on',app.running);$('runLabel').textContent=app.running?'OFFICES IN MOTION':'MACHINERY IDLE';$('runBtn').textContent=app.running?'Ⅱ SUSPEND PROCESSING':'▶ BEGIN PROCESSING';$('machineCaption').textContent=app.running?'APPARATUS OPERATING':'CIRCULATION SUSPENDED';$('conveyorBelt').classList.toggle('on',app.running);$('soundBtn').textContent=app.sound?'SOUND ON':'SOUND OFF';all('[data-speed]').forEach(el=>el.classList.toggle('active',Number(el.dataset.speed)===app.speed));if(d){$('regulationCase').textContent='CASE '+pad(d.id);all('[data-preset]').forEach(el=>{el.classList.toggle('current',el.dataset.preset===d.config.preset);el.disabled=!!d.completedAt;});for(const [name,id] of [['circular','circularToggle'],['audits','auditToggle'],['misfile','misfileToggle'],['decorumVeto','decorumVetoToggle']]){const input=$(id);input.checked=d.config[name];input.disabled=!!d.completedAt;}$('regulationNote').textContent=d.completedAt?'This petition has received final authorization; its regulations are now sealed. New petitions start with Official rules unless you explicitly select Copy.':'Changes here affect CASE '+pad(d.id)+' only. New petitions start with Official rules unless you explicitly select Copy at intake.';}
+ const unfinished=app.dockets.filter(item=>!item.performed).length;
+ const finished=app.dockets.length-unfinished;
+ const deadlocked=app.dockets.filter(item=>!item.completedAt&&cycleGroups(item).length).length;
+ $('queueCount').textContent=pad(app.dockets.length,2)+' FILE'+(app.dockets.length===1?'':'S');
+ $('docketSummary').innerHTML=`<strong>${deadlocked} DEADLOCKED</strong> · ${unfinished} UNFINISHED · ${finished} FINISHED`;
+ $('jumpDeadlockBtn').hidden=deadlocked===0;
+ all('[data-filter]').forEach(el=>el.classList.toggle('active',el.dataset.filter===app.docketFilter));
+ const sorted=[...app.dockets].sort((a,b)=>Number(a.performed)-Number(b.performed)||b.id-a.id);
+ const visible=sorted.filter(item=>app.docketFilter==='all'||(app.docketFilter==='unfinished'?!item.performed:item.performed));
+ $('docketQueue').innerHTML=visible.length?visible.map(item=>{
+  const standing=stateOf(item);
+  const note=standing.cls==='bad'?`${item.deadlockCount||cycleGroups(item).length} circular chain(s) · since T+${pad(item.deadlockSince??item.created,5)}`:item.completedAt?(item.performed?'Act performed':'Awaiting execution'):standing.label==='DECORUM REVIEW'?'Decorum may overrule the Committee':standing.label==='IN REVIEW'?'An office is examining the file':item.conduct.status==='vetoed'?'Silly walk rejected; papers being reissued':'Awaiting processing';
+  return `<button class="case-btn ${item.id===app.selected?'active':''}" data-case="${item.id}" aria-pressed="${item.id===app.selected}"><span class="case-top"><span>CASE ${pad(item.id)}</span><span class="case-status ${standing.cls}">${standing.label}</span></span><span class="case-title">${safe(item.title)}</span><span class="case-subline">${safe(note)}</span><span class="case-rules">RULES · ${safe(regulationText(item.config))}</span><span class="case-progress">${OFFICES.map(o=>`<i class="${approved(item,o.id)?'done':record(item,o.id).state==='reviewing'?'review':''}"></i>`).join('')}</span></button>`;
+ }).join(''):'<div class="docket-empty">No petitions match this register filter.</div>';
+ if(!d)return;let s=stateOf(d);$('activeCaseId').textContent=`CASE NO. ${pad(d.id)} · REGISTRY ${OFFICES.filter(o=>approved(d,o.id)).length}/${pad(OFFICES.length,2)}`;$('activeCaseTitle').textContent=d.title;$('activeCaseSub').textContent=d.performed?'The requested act has been lawfully accomplished.':d.completedAt?'Unanimous authorization recorded. The act itself still awaits execution.':'An extraordinarily minor action requiring comprehensive institutional assent.';$('caseStamp').className='status-stamp '+s.cls;$('caseStamp').textContent=s.label;
+ $('officeGrid').innerHTML=OFFICES.map((o,i)=>{let r=record(d,o.id),missing=depsFor(d,o.id).filter(dep=>!approved(d,dep)),label=r.state==='reviewing'?'REVIEWING':r.state==='approved'?'APPROVED':r.state==='waived'?'DISPENSATION':r.state==='revoked'?'RESCINDED':r.state==='blocked'?'ON HOLD':'UNFILED';let note=r.state==='reviewing'?(o.id==='walks'&&r.walkPermitIssued?'Provisional permit issued; gait inspection ongoing':`${r.remaining} inspection unit${r.remaining===1?'':'s'} remaining`):missing.length?'Awaiting: '+missing.map(x=>OFFICES.find(a=>a.id===x).short).join(', '):r.state==='waived'?'Requirement overridden':r.state==='approved'?'Stamped and entered':r.state==='revoked'?'Reapplication required':'Not yet examined';if(o.id==='dispatch'&&!d.completedAt&&!conductCleared(d)&&!missing.length)note='Awaiting Decorum’s F-023-G verdict';if(o.id==='committee'&&r.state==='approved'&&d.conduct.status==='pending')note='Approved provisionally; Decorum appeal pending';let prog=r.state==='reviewing'?Math.max(10,100*(1-r.remaining/reviewDelay(d,o))):approved(d,o.id)?100:0;return `<div class="office ${app.selectedOffice===o.id?'selected':''}" data-office="${o.id}" role="button" tabindex="0" aria-pressed="${app.selectedOffice===o.id}" aria-label="Inspect ${safe(o.name)}, ${label}"><div class="office-num"><span>CHAMBER ${o.number}</span><small>⊞</small></div><div class="office-title">${safe(o.name)}</div><div class="office-form">${o.form} / ${o.short.toUpperCase()}</div><div class="office-bottom"><span class="office-state ${r.state}">${label}</span><span class="office-flag ${r.state}"></span></div><div class="office-note ${missing.length?'problem':''}">${safe(note)}</div><div class="progress-track"><div class="progress-fill" style="width:${prog}%"></div></div></div>`;}).join('');
+ let groups=cycleGroups(d),diag=$('diagnostic');if(d.completedAt){diag.className='diagnostic';diag.innerHTML=`<div class="diagnostic-head">✓ PROCEDURAL CONSENSUS ACHIEVED</div><div class="diagnostic-text">${OFFICES.length} offices have authorized this act after ${d.completedAt-d.created} procedural tick${d.completedAt-d.created===1?'':'s'}. The act is ${d.performed?'on record as accomplished':'still awaiting actual execution'}.</div>${d.performed?'':`<div class="diagnostic-buttons"><button class="button red small" id="performBtn">${d.key==='bell'?'RING THE AUTHORIZED BELL':'PERFORM AUTHORIZED ACTION'}</button></div>`}`;}
+ else if(groups.length){const readable=groups.map(g=>[...g,g[0]].map(id=>OFFICES.find(o=>o.id===id).short).join(' → '));diag.className='diagnostic bad';diag.innerHTML=`<div class="diagnostic-head">⚠ INSTITUTIONAL DEADLOCK DETECTED</div><div class="diagnostic-text">This petition has been independently deadlocked since procedural T+${pad(d.deadlockSince??d.created,5)}. ${groups.length} circular prerequisite chain${groups.length===1?'':'s'} prevent the listed offices from authorizing each other. Other petitions may proceed while this file remains blocked; no amount of waiting will resolve it. Inspect an office and grant an extraordinary dispensation, or revise the regulations.</div><div class="cycle-path">${readable.slice(0,3).map((line,i)=>`CYCLE ${pad(i+1,2)}: ${safe(line)}`).join('<br>')}${readable.length>3?`<br>+ ${readable.length-3} overlapping dependency loops`:''}</div><div class="diagnostic-buttons"><button class="button outline small" id="locateBlockBtn">INSPECT A BLOCKED OFFICE</button></div>`;}
+ else if(d.conduct.status==='pending'){diag.className='diagnostic';diag.innerHTML=`<div class="diagnostic-head">◌ DECORUM REVIEWING THE APPROVED GAIT</div><div class="diagnostic-text">The Committee has signed F-047, but Decorum is inspecting the walking conduct under F-023-G. Final Dispatch is suspended until Decorum affirms the walk or voids F-046-W, F-041 and F-047 for reissue. Review attempt ${d.conduct.attempts}; prior vetoes ${d.conduct.vetoes}.</div>`;}
+ else{let approvedCount=OFFICES.filter(o=>approved(d,o.id)).length;diag.className='diagnostic';diag.innerHTML=`<div class="diagnostic-head">${approvedCount?'✓ PROCEDURES UNDER WAY':'◌ NO CONTRADICTION ON RECORD'}</div><div class="diagnostic-text">${approvedCount} of ${OFFICES.length} chambers have given their assent. ${app.running?'Clerks are processing the remaining papers.':'Resume processing or advance one tick to see what each office requires.'} ${d.config.audits?'Previously issued certificates are subject to retroactive review.':''}</div>`;}
+ $('dossier').innerHTML=`<div class="micro">Form of petty intention</div><h3 class="document-title">Petition for a<br>Minor Act</h3><div class="document-subtitle">In triplicate · Original copy</div><div class="doc-line"><span class="key">Serial</span><span class="val">DUP-26-${pad(d.id,5)}</span></div><div class="doc-line"><span class="key">Requested</span><span class="val">${safe(d.title)}</span></div><div class="doc-line"><span class="key">Filed at</span><span class="val">PROCEDURAL T+${pad(d.created,5)}</span></div><div class="doc-line"><span class="key">Certified</span><span class="val">${OFFICES.filter(o=>approved(d,o.id)).length} OF ${OFFICES.length} OFFICES</span></div><div class="doc-line"><span class="key">Standing</span><span class="val">${safe(s.label)}</span></div><div class="doc-line"><span class="key">Regulations</span><span class="val">${safe(regulationText(d.config))}</span></div><div class="doc-line"><span class="key">Walk hearings</span><span class="val">${d.conduct.attempts} REVIEWED · ${d.conduct.vetoes} VETOED</span></div><div class="doc-line"><span class="key">Decorum finding</span><span class="val">${safe(!d.config.decorumVeto?'NOT REQUIRED':d.conduct.status.toUpperCase())}</span></div><div class="stamp-box"><div class="seal ${d.completedAt?'good':''}">${d.completedAt?'APPROVED':'NOT YET'}</div><p>${d.completedAt?'Authorized under all presently applicable provisions.':'Copy invalid without proof of approval of the original copy.'}</p></div>`;
+ const office=OFFICES.find(o=>o.id===app.selectedOffice)||OFFICES[0];const r=record(d,office.id);$('officeIndex').textContent=office.number+' / '+pad(OFFICES.length,2);let deps=depsFor(d,office.id);$('officeDetail').innerHTML=`<div class="detail-title">${safe(office.name)}</div><div class="detail-state">STATUS: ${r.state.toUpperCase()}</div><p class="detail-text">${safe(office.about)}</p><p class="detail-text"><em>“${safe(office.instruction)}”</em></p><div class="micro" style="margin:14px 0 5px">Required authorizations</div><ul class="need-list">${deps.length?deps.map(id=>`<li>${safe(OFFICES.find(o=>o.id===id).short)} · ${OFFICES.find(o=>o.id===id).form}<span class="${approved(d,id)?'yes':''}">${approved(d,id)?'on file':'missing'}</span></li>`).join(''):'<li>None. This is the beginning of the difficulty.</li>'}</ul>${['walks','committee','decorum'].includes(office.id)?`<div class="walk-permit"><strong>POST-COMMITTEE DECORUM · F-023-G</strong><br>Authority: ${d.config.decorumVeto?'ACTIVE':'WAIVED BY REGULATION'}<br>Review: ${safe(d.conduct.status.toUpperCase())}<br>Conduct hearings: ${d.conduct.attempts} · Formal vetoes: ${d.conduct.vetoes}<br>${safe(d.conduct.lastFinding)}</div>`:''}${office.id==='walks'?`<div class="walk-permit"><strong>COMMITTEE FORM F-046-W</strong><br>Preliminary walk permit: ${r.walkPermitIssued||approved(d,'walks')?'ISSUED':'AWAITING SANCTION'}<br>${d.config.circular?'Circular mandate: final Committee approval is also required before the walk may begin.': 'Issued provisionally before the Committee’s final vote.'}</div>`:''}<div class="detail-action"><button class="button outline small" id="waiveBtn" ${d.completedAt||approved(d,office.id)?'disabled':''}>ISSUE EXTRAORDINARY DISPENSATION</button><p>Intervention bypasses this office's requirements. It does not settle obligations at other offices.</p></div>`;
+ $('auditLog').innerHTML=app.history.slice(0,70).map(h=>`<div class="log-row ${h.kind}"><div class="log-tick">${pad(h.tick,3)}</div><div class="message">${h.caseId==='—'?'GENERAL':`#${pad(h.caseId)}`} — ${safe(h.message)}</div></div>`).join('');$('eventCount').textContent=app.history.length+' ENTRIES';$('mTicks').textContent=app.clock.toLocaleString();$('mGranted').textContent=app.stats.issued.toLocaleString();$('mRevoked').textContent=app.stats.revoked.toLocaleString();$('mVetoes').textContent=app.stats.vetoes.toLocaleString();$('mConflicts').textContent=app.stats.cycles.toLocaleString();$('mDone').textContent=app.stats.performed.toLocaleString();}
+
+// SUPPLEMENTARY INVESTIGATION ONLY. Do not modify log(), app.history, or downloadLog().
+// The report reads the same chronological events as the certified ledger, but
+// filters them to one docket and reconstructs causes and consequences.
+let activeInvestigation=null;
+let inquiryReturnFocus=null;
+const inquiryRelevant = /^(Petition received:|Petition regulations revised:|ENACTED for this petition:|REPEALED for this petition:|FORMAL CONTRADICTION:|PROCEDURAL IMPASSE RESOLVED:|EXTRAORDINARY DISPENSATION:|RETROACTIVE AUDIT:|FILING INCIDENT:|DECORUM VETO|FULL WALKING REISSUE ORDER:|DECORUM AFFIRMS|DECORUM APPEAL OPENED:|PROVISIONAL WALK PERMIT:|CEREMONIAL GAIT COMPLETED:|FINAL AUTHORIZATION:|AUTHORIZED ACT EXECUTED:)/;
+function inquiryChronology(events){
+ const items=[];
+ let stamps=[];
+ function flushStamps(){
+  if(!stamps.length)return;
+  let first=stamps[0].tick,last=stamps[stamps.length-1].tick;
+  let named=stamps.map(h=>{let m=h.message.match(/^(.+?) stamps (F-[\w-]+) APPROVED\.$/);return m?`${m[1]} (${m[2]}) at T+${pad(h.tick,5)}`:h.message;});
+  items.push({tick:first,to:last,kind:'ordinary',title:`${stamps.length} approval stamp${stamps.length===1?'':'s'} entered`,detail:named.join('; ')+'.'});stamps=[];
+ }
+ for(let i=0;i<events.length;i++){
+  const h=events[i],m=h.message;
+  if(/^.+? stamps F-[\w-]+ APPROVED\.$/.test(m)){stamps.push(h);continue;}
+  if(!inquiryRelevant.test(m))continue;
+  flushStamps();
+  let title='',detail='',kind='ordinary';
+  if(m.startsWith('Petition received:')){title='Petition formally received';detail=m;}
+  else if(/^(Petition regulations revised:|ENACTED for this petition:|REPEALED for this petition:)/.test(m)){title='Governing regulations amended';detail=m;}
+  else if(m.startsWith('FORMAL CONTRADICTION:')){title='Circular authorization conflict discovered';detail=m;kind='problem';}
+  else if(m.startsWith('PROCEDURAL IMPASSE RESOLVED:')){title='Circular authorization conflict cleared';detail=m;kind='resolution';}
+  else if(m.startsWith('EXTRAORDINARY DISPENSATION:')){title='Extraordinary dispensation issued';detail=m+' A requirement was satisfied by exception rather than ordinary examination.';kind='resolution';}
+  else if(m.startsWith('RETROACTIVE AUDIT:')||m.startsWith('FILING INCIDENT:')){
+   const audit=m.startsWith('RETROACTIVE');title=audit?'Previously approved form recalled':'Previously approved form misfiled';detail=m;kind='problem';
+   let consequences=[];
+   while(i+1<events.length&&events[i+1].tick===h.tick&&/rescinded; prerequisite no longer valid\.$/.test(events[i+1].message)){
+    consequences.push(events[++i].message);
+   }
+   if(consequences.length)detail+=' The loss of that evidence also triggered these dependent rescissions: '+consequences.join(' ');
+  }
+  else if(m.startsWith('DECORUM VETO')){
+   title='Decorum overturned the Committee';detail=m;kind='problem';let consequences=[];
+   while(i+1<events.length&&events[i+1].tick===h.tick&&(/annulled by Decorum/.test(events[i+1].message)||events[i+1].message.startsWith('FULL WALKING REISSUE ORDER:')))consequences.push(events[++i].message);
+   if(consequences.length)detail+=' Consequences: '+consequences.join(' ');
+  }
+  else if(m.startsWith('FULL WALKING REISSUE ORDER:')){title='Silly-walk paperwork ordered reissued';detail=m;kind='problem';}
+  else if(m.startsWith('DECORUM AFFIRMS')){title='Decorum accepted the conduct';detail=m;kind='resolution';}
+  else if(m.startsWith('DECORUM APPEAL OPENED:')){title='Post-Committee conduct review opened';detail=m;}
+  else if(m.startsWith('PROVISIONAL WALK PERMIT:')){title='Provisional walking permit issued';detail=m;}
+  else if(m.startsWith('CEREMONIAL GAIT COMPLETED:')){title='Ceremonial silly walk performed';detail=m;}
+  else if(m.startsWith('FINAL AUTHORIZATION:')){title='Final permission granted';detail=m;kind='resolution';}
+  else if(m.startsWith('AUTHORIZED ACT EXECUTED:')){title='Requested act performed';detail=m;kind='resolution';}
+  else continue;
+  items.push({tick:h.tick,to:h.tick,title,detail,kind});
+ }
+ flushStamps();
+ return items;
+}
+function inquiryCreateModel(d){
+ const events=app.history.slice().reverse().filter(h=>h.caseId===d.id);
+ const tally=pattern=>events.filter(h=>pattern.test(h.message)).length;
+ const stamps=tally(/ stamps F-[\w-]+ APPROVED\.$/);
+ const waivers=tally(/^EXTRAORDINARY DISPENSATION:/);
+ const audits=tally(/^RETROACTIVE AUDIT:/);
+ const misfiles=tally(/^FILING INCIDENT:/);
+ const gait=tally(/^CEREMONIAL GAIT COMPLETED:/);
+ const permits=tally(/^PROVISIONAL WALK PERMIT:/);
+ const veto=tally(/^DECORUM VETO/);
+ const hearing=tally(/^DECORUM APPEAL OPENED:/);
+ const deadlock=tally(/^FORMAL CONTRADICTION:/);
+ const referrals=tally(/^Motion to resolve this petition's impasse/);
+ const chronology=inquiryChronology(events);
+ const state=stateOf(d);
+ const lastExecution=events.findLast(h=>h.message.startsWith('AUTHORIZED ACT EXECUTED:'));
+ const rulesFirst=events.find(h=>h.message.includes('Governing rules:'))?.message.match(/Governing rules: ([^.]+)\./)?.[1]||'No initial regulation entry available';
+ const completeArchive=events.some(h=>h.message.startsWith('Petition received:'));
+ let finding='';
+ if(d.performed)finding=`Final permission was issued at T+${pad(d.completedAt,5)}. The requested act was carried out at T+${pad(lastExecution?.tick??d.completedAt,5)}. The record describes no consequential result.`;
+ else if(d.completedAt)finding=`All eight chamber requirements were met and final permission was issued at T+${pad(d.completedAt,5)}. The permitted act has not yet been executed.`;
+ else if(cycleGroups(d).length)finding=`This file remains open. ${cycleGroups(d).length} circular prerequisite loop${cycleGroups(d).length===1?' is':'s are'} still unresolved. Changing another petition's rules does not settle this case.`;
+ else if(d.conduct.status==='pending')finding='This file remains open while Decorum reviews the Committee-approved silly walk. Final Dispatch is suspended pending its finding.';
+ else finding='The petition remains open. The surviving approvals are shown below; further examination or intervention is required.';
+ const anomalies=[];
+ if(deadlock)anomalies.push(`${deadlock} recorded contradiction finding${deadlock===1?'':'s'}`);
+ if(waivers)anomalies.push(`${waivers} extraordinary dispensation${waivers===1?'':'s'}`);
+ if(audits)anomalies.push(`${audits} retroactive audit${audits===1?'':'s'}`);
+ if(misfiles)anomalies.push(`${misfiles} filing incident${misfiles===1?'':'s'}`);
+ if(veto)anomalies.push(`${veto} Decorum veto${veto===1?'':'es'}`);
+ const interference=anomalies.length?`The recorded proceedings include ${anomalies.join(', ')}. These are distinct events, and an audit or misfiling may also cause additional downstream approvals to be rescinded.`:'The recorded proceedings contain no circular-conflict findings, extraordinary dispensations, audits, misfilings, or Decorum vetoes.';
+ const formRows=OFFICES.map(o=>{const r=record(d,o.id);const needs=depsFor(d,o.id).filter(id=>!approved(d,id)).map(id=>OFFICES.find(x=>x.id===id).short);return {form:o.form,office:o.short,state:r.state.toUpperCase(),needs:needs.join(', ')||'—'};});
+ return {id:d.id,title:d.title,created:d.created,asOf:app.clock,state:state.label,rulesFirst,rulesNow:regulationText(d.config),finding,interference,completeArchive,stamps,waivers,audits,misfiles,gait,permits,veto,hearing,deadlock,referrals,chronology,formRows,eventsCount:events.length};
+}
+function inquiryRenderModel(x){
+ const time=entry=>`T+${pad(entry.tick,5)}${entry.to>entry.tick?' – T+'+pad(entry.to,5):''}`;
+ const metric=(val,label)=>`<div class="report-stat"><strong>${safe(val)}</strong><span>${safe(label)}</span></div>`;
+ const formRows=x.formRows.map(r=>`<tr><td>${safe(r.form)}</td><td>${safe(r.office)}</td><td>${safe(r.state)}</td><td>${safe(r.needs)}</td></tr>`).join('');
+ $('investigationDocument').innerHTML=`<header class="report-letterhead">Department of Unnecessary Procedures<br>Office of Procedural Inquiry · supplementary findings · IR-001</header>
+ <h2 id="investigationTitle">Investigative Report: DUP-${pad(x.id,5)}</h2><div class="report-case-title">Matter under examination: “${safe(x.title)}”</div>
+ <div class="report-subtitle">Reconstructed from case-specific ledger entries through T+${pad(x.asOf,5)} · ${safe(x.state)}</div>
+ <div class="report-stats">${metric('T+'+pad(x.created,5),'Petition filed')}${metric('T+'+pad(x.asOf,5),'Report prepared')}${metric(x.stamps,'Ordinary stamps recorded')}${metric(x.waivers,'Extraordinary dispensations')}${metric(x.audits+x.misfiles,'Audits + filing incidents')}${metric(x.gait,'Ceremonial walks completed')}</div>
+ <section><h3>01 — Determination</h3><p>${safe(x.finding)}</p><p>${safe(x.interference)}</p><p class="report-note">Regulations at filing: ${safe(x.rulesFirst)}<br>Regulations at report time: ${safe(x.rulesNow)}<br>Conduct-review openings: ${x.hearing} · Decorum vetoes: ${x.veto} · Provisional walking permits: ${x.permits} · Repeated impasse referrals: ${x.referrals}</p></section>
+ <section><h3>02 — Reconstructed proceedings</h3><p class="report-note">Events are arranged in procedural order. Routine examination notices and hold reminders are omitted, but the certified ledger preserves them. Ordinary approvals may be grouped into a single chronological entry.</p>
+ ${x.chronology.length?`<ol class="report-timeline">${x.chronology.map(e=>`<li class="${safe(e.kind)}"><div class="report-time">${time(e)}</div><div><div class="report-entry-title">${safe(e.title)}</div><p>${safe(e.detail)}</p></div></li>`).join('')}</ol>`:'<p>No substantive proceedings have yet been entered for this case.</p>'}
+ </section><section><h3>03 — Current disposition of forms</h3><p class="report-note">A snapshot of the eight chambers, not a historical count. “Missing” indicates current prerequisites, not a new directive.</p><table class="report-form-table"><thead><tr><th>Form</th><th>Office</th><th>Current standing</th><th>Awaiting</th></tr></thead><tbody>${formRows}</tbody></table></section>
+ <footer class="report-disclaimer">This report is a secondary reconstruction of ${x.eventsCount} available case-specific ledger entries. ${x.completeArchive?'The original petition receipt is present in the available history.':'The original petition receipt is not present in the available history; older entries may have been pruned.'} It is not a replacement for the Certified Event Ledger, which remains unaltered. Statements about cause and consequence are limited to events recorded by the simulation. THIS REPORT DOES NOT CONSTITUTE A PERMIT.</footer>`;
+}
+function inquiryText(x){
+ const time=e=>`T+${pad(e.tick,5)}${e.to>e.tick?' to T+'+pad(e.to,5):''}`;
+ return [
+  'DEPARTMENT OF UNNECESSARY PROCEDURES','OFFICE OF PROCEDURAL INQUIRY','SUPPLEMENTARY INVESTIGATIVE REPORT — IR-001','------------------------------------------------',
+  `CASE: DUP-${pad(x.id,5)}`,`MATTER: ${x.title}`,`STATUS AT REPORT: ${x.state}`,`FILED: T+${pad(x.created,5)}`,`REPORT PREPARED: T+${pad(x.asOf,5)}`,'',
+  '01 — DETERMINATION',x.finding,'',x.interference,'',`Initial regulations: ${x.rulesFirst}`,`Regulations at report: ${x.rulesNow}`,
+  `Ordinary approval stamps: ${x.stamps}; dispensations: ${x.waivers}; audits: ${x.audits}; misfilings: ${x.misfiles}`,
+  `Conduct reviews: ${x.hearing}; vetoes: ${x.veto}; permits: ${x.permits}; completed walks: ${x.gait}; impasse referrals: ${x.referrals}`,'',
+  '02 — RECONSTRUCTED PROCEEDINGS',
+  ...x.chronology.flatMap(e=>[`${time(e)} — ${e.title.toUpperCase()}`,e.detail,'']),
+  '03 — CURRENT DISPOSITION OF FORMS',
+  ...x.formRows.map(r=>`${r.form} | ${r.office} | ${r.state} | awaiting: ${r.needs}`),'',
+  `RECORD BASIS: ${x.eventsCount} available case-specific ledger entries. ${x.completeArchive?'Original petition receipt present.':'Original receipt unavailable; older events may have been pruned.'}`,
+  'This is a separate reconstruction and does not amend, replace, or certify the original event ledger.','THIS REPORT DOES NOT CONSTITUTE A PERMIT.'
+ ].join('\n');
+}
+function inquiryRefresh(){const d=app.dockets.find(d=>d.id===activeInvestigation);if(!d){inquiryClose();return;}window.__dupInvestigationSnapshot=inquiryCreateModel(d);inquiryRenderModel(window.__dupInvestigationSnapshot);$('investigationScroll').scrollTop=0;}
+function inquiryOpen(){const d=current();if(!d)return;inquiryReturnFocus=document.activeElement;activeInvestigation=d.id;$('investigationDialog').hidden=false;document.body.style.overflow='hidden';inquiryRefresh();$('closeInvestigationBtn').focus();}
+function inquiryClose(){if($('investigationDialog').hidden)return;$('investigationDialog').hidden=true;document.body.style.overflow='';document.body.classList.remove('inquiry-print');activeInvestigation=null;window.__dupInvestigationSnapshot=null;if(inquiryReturnFocus?.isConnected)inquiryReturnFocus.focus();}
+function inquiryExport(){if(!window.__dupInvestigationSnapshot)return;const x=window.__dupInvestigationSnapshot;const text=inquiryText(x);const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='DUP-investigative-report-'+pad(x.id,5)+'-T'+pad(x.asOf,5)+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast('Supplementary report exported; certified ledger unaffected.');}
+$('openInvestigationBtn').addEventListener('click',inquiryOpen);
+$('closeInvestigationBtn').addEventListener('click',inquiryClose);
+$('refreshInvestigationBtn').addEventListener('click',inquiryRefresh);
+$('downloadInvestigationBtn').addEventListener('click',inquiryExport);
+$('printInvestigationBtn').addEventListener('click',()=>{document.body.classList.add('inquiry-print');window.print();});
+window.addEventListener('afterprint',()=>document.body.classList.remove('inquiry-print'));
+$('investigationDialog').addEventListener('click',e=>{if(e.target===$('investigationDialog'))inquiryClose();});
+document.addEventListener('keydown',e=>{if($('investigationDialog').hidden)return;if(e.key==='Escape'){e.preventDefault();inquiryClose();}if(e.key==='Tab'){const focusable=[...$('investigationDialog').querySelectorAll('button:not(:disabled)')];const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+
+function downloadLog(){const lines=["DEPARTMENT OF UNNECESSARY PROCEDURES","CERTIFIED EVENT LEDGER","------------------------------------------------",`EXPORT AT PROCEDURAL T+${pad(app.clock,5)}`,`Regulations: individual to each petition; see docket standings below`,`Petitions: ${app.dockets.length}`,`Stamps issued: ${app.stats.issued}; revoked: ${app.stats.revoked}; circular conflicts: ${app.stats.cycles}; decorum vetoes: ${app.stats.vetoes}`,"------------------------------------------------",'DOCKET STANDINGS AT EXPORT (oldest first):',...app.dockets.slice().reverse().map(d=>{const s=stateOf(d);const n=OFFICES.filter(o=>approved(d,o.id)).length;const g=cycleGroups(d);return `DUP-${pad(d.id,5)}: ${s.label} | ${n}/${OFFICES.length} approvals | ${g.length} circular loops | ${d.completedAt?'authorized T+'+pad(d.completedAt,5):'filed T+'+pad(d.created,5)} | regulations ${JSON.stringify(d.config)} | conduct reviews ${d.conduct.attempts}, vetoes ${d.conduct.vetoes}, finding ${d.conduct.status}`;}),'------------------------------------------------',...app.history.slice().reverse().map(h=>`T+${pad(h.tick,5)} [${h.caseId==='—'?'GENERAL':`DUP-${pad(h.caseId,5)}`}] ${h.kind.toUpperCase()}: ${h.message}`),'','THIS CERTIFICATE IS INVALID UNLESS PRINTED IN TRIPLICATE.'];let blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='DUP-certified-ledger-T'+pad(app.clock,5)+'.txt';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast('Certified ledger exported.');}
+function reset(){if(!confirm('Shred every docket, revoke all approvals, and reset procedural time?'))return;stop();app.clock=0;app.seq=0;app.dockets=[];app.selected=null;app.selectedOffice='intake';app.history=[];app.stats={issued:0,revoked:0,cycles:0,performed:0,vetoes:0};app.docketFilter='all';newDocket(REQUESTS.bell,'bell');toast('All records shredded. A new request has already arrived.');}
+$('fileBtn').addEventListener('click',()=>{const own=$('customRequest').value.trim(),key=own?'custom':$('requestSelect').value,title=own||REQUESTS[key];if(!title){toast('A statement of intention is required.');return}const copyRules=$('inheritRulesToggle').checked;newDocket(title,key,copyRules);$('customRequest').value='';toast(`Petition ${pad(app.seq)} duly entered into the system.`);});$('customRequest').addEventListener('keydown',e=>{if(e.key==='Enter')$('fileBtn').click();});$('runBtn').addEventListener('click',()=>app.running?stop():run());$('stepBtn').addEventListener('click',()=>{if(app.running)stop();tick();});$('soundBtn').addEventListener('click',()=>{app.sound=!app.sound;render();if(app.sound)tone('click');});$('exportBtn').addEventListener('click',downloadLog);$('resetBtn').addEventListener('click',reset);all('[data-preset]').forEach(el=>el.addEventListener('click',()=>preset(el.dataset.preset)));all('[data-speed]').forEach(el=>el.addEventListener('click',()=>adjustSpeed(Number(el.dataset.speed))));
+ for(let key of ['circular','audit','misfile','decorumVeto']){let input=$(key+'Toggle');input.addEventListener('change',()=>{let cfg=key==='audit'?'audits':key==='misfile'?'misfile':key==='decorumVeto'?'decorumVeto':'circular';const d=current();if(!d||d.completedAt)return;d.config[cfg]=input.checked;d.config.preset='custom';configChanged(d,`${input.checked?'ENACTED':'REPEALED'} for this petition: ${key==='circular'?'circular mandates':key==='audit'?'retroactive audits':key==='decorumVeto'?'Decorum’s post-Committee gait veto':'misfiling incidents'}.`);});}
+ all('[data-filter]').forEach(el=>el.addEventListener('click',()=>{
+ app.docketFilter=el.dataset.filter;
+ const matches=app.dockets.filter(d=>app.docketFilter==='all'||(app.docketFilter==='unfinished'?!d.performed:d.performed));
+ if(matches.length&&!matches.some(d=>d.id===app.selected))app.selected=matches[0].id;
+ render();
+}));
+$('jumpDeadlockBtn').addEventListener('click',()=>{
+ const oldest=app.dockets.filter(d=>!d.completedAt&&cycleGroups(d).length).sort((a,b)=>a.id-b.id)[0];
+ if(!oldest)return;
+ app.docketFilter='unfinished';app.selected=oldest.id;app.selectedOffice=cycleGroups(oldest)[0][0];
+ render();toast(`Returned to DUP-${pad(oldest.id,5)}. Its unresolved requirements are still on file.`);
+});
+$('docketQueue').addEventListener('click' ,e=>{let btn=e.target.closest('[data-case]');if(!btn)return;app.selected=Number(btn.dataset.case);render();});$('officeGrid').addEventListener('click',e=>{let el=e.target.closest('[data-office]');if(!el)return;app.selectedOffice=el.dataset.office;render();});$('officeGrid').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-office]')){e.preventDefault();app.selectedOffice=e.target.dataset.office;render();}});$('officeDetail').addEventListener('click',e=>{if(e.target.id==='waiveBtn')waive();});$('diagnostic').addEventListener('click',e=>{if(e.target.id==='performBtn')perform();if(e.target.id==='locateBlockBtn'){let d=current(),groups=cycleGroups(d);if(groups.length){app.selectedOffice=groups[0][0];render();toast('A contradictory department has been selected.');}}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&app.running)stop();});
+ newDocket(REQUESTS.bell,'bell');
+})();
+</script>
+</body>
+</html>
